@@ -1,5 +1,7 @@
 package interfaces;
 
+import java.util.ArrayList;
+
 import model.Block;
 
 public interface Blockchain_IF {
@@ -9,6 +11,8 @@ public interface Blockchain_IF {
     boolean isChainValid();
     void displayChain();
     Double getAmountCoinBase();
+    int getDifficulty();
+    ArrayList<Block> getChain();
     
 }
 

@@ -46,17 +46,13 @@ public class Wallet implements Wallet_IF {
 		 */
 		
 		try {
-			// Determina o uso da criptografia ECC da biblioteca Java Security
 			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC"); 
 			
-			// Determina o uso da curva elíptica de 256 bits e o inicializa
 			ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256r1");
 			keyPairGenerator.initialize(ecSpec, new SecureRandom());
 			
-			// Gera um par de chaves
 			KeyPair keyPair = keyPairGenerator.generateKeyPair();
             
-            // Obtem a chave pública e a chave privada
             this.publicKey = keyPair.getPublic();
             this.privateKey = keyPair.getPrivate();
             
@@ -70,20 +66,10 @@ public class Wallet implements Wallet_IF {
 		// Prefixo
 		String prefix = "DERFN";
 		
-		/*
-		 * Na sequência, farei um algoritmo que retornará 7 dígitos aleatórios
-		 * de 0 a 9 que somados são sempre = 21, isso dá 209.525 possibilidades
-		 * diferentes de retorno.
-		 */
 		String numericPart = generateSevenDigitsSum21();
 		
-		/*
-		 * Agora para completar 50 caracteres, vou gerar 38 caracteres hexadecimais
-		 * a partir da chave pública
-		 */
 		String hexPart = generateHexFromPublicKey();
 		
-		// Une tudo e retorna o endereço da carteira
 		return prefix + numericPart + hexPart;
 	}
 	
@@ -100,28 +86,29 @@ public class Wallet implements Wallet_IF {
 		
 	}
 	
+	@Override
+	public void resetWallet() {
+		this.transactions.clear();
+		this.balance = 0.0;
+	}
+	
 	// auxiliary methods
 	private String generateSevenDigitsSum21() {
-		// Criando método randomico
 		Random random = new Random();
 		
-		// Lista de números
 		List<Integer> digits = new ArrayList<>();
 		
-		// inicializar soma
 		int sum = 0;
         
-        // Gerar 7 dígitos
         while (digits.size() < 7) {
         	
-        	int digit = random.nextInt(10); // numeros de 0 a 9
+        	int digit = random.nextInt(10); 
         	
         	if(digit + sum <= 21 && digits.size() < 6) {
         		
         		digits.add(digit);
                 sum += digit;
                 
-                // completa de 0 em caso de já ter completado 21
                 if(sum == 21) {
                 	int numberMissingOfNumbers = Math.abs(digits.size() - 7);
                 	
@@ -132,14 +119,10 @@ public class Wallet implements Wallet_IF {
                 
         	} else if(digits.size() == 6) {
         		
-        		/*
-        		 *  Verifica se tem um numero que possa completar,
-        		 *  se não tem limpa tudo e recomeça
-        		 */
         		if(sum + 9 < 21) {
 	        		sum = 0;
 	        		digits.clear();
-        		}else { // Se tiver, entra no else e descobre esse número e o coloca
+        		}else { 
         			int numberMissing = 21 - sum;
         			digits.add(numberMissing);
                     sum += numberMissing;
@@ -149,7 +132,6 @@ public class Wallet implements Wallet_IF {
             
         }
         
-        // Converte os dígitos para String e retorna
         StringBuilder numericPart = new StringBuilder();
         for (int digit : digits) {
             numericPart.append(digit);
@@ -164,16 +146,12 @@ public class Wallet implements Wallet_IF {
 	private String generateHexFromPublicKey() {
         try {
         	
-        	// Gera a instãncia de SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             
-            // Calcula o hash a partir da chave pública
             byte[] hash = digest.digest(this.publicKey.getEncoded());
             
-            // Transforma o array de bytes em string diretamente
             String hexString = new BigInteger(1, hash).toString(16);
             
-            // Retorna os primeiros 38 caracteres
             return hexString.substring(0, 38);
             
         } catch (Exception e) {
@@ -181,11 +159,6 @@ public class Wallet implements Wallet_IF {
             throw new RuntimeException("Erro ao gerar parte hexadecimal do endereço", e);
             
         }
-	}
-	
-	public void resetWallet() {
-		this.transactions.clear();
-		this.balance = 0.0;
 	}
 	
 	public void displayTransactionAndBalance() {

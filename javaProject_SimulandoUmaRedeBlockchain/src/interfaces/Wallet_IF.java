@@ -10,12 +10,13 @@ public interface Wallet_IF {
 	void generateKeyPair();
 	String generateAddress();
 	void addTransaction(Transaction transaction);
-
 	void setNickname(String nickname);
 	PublicKey getPublicKey();
 	String getNickname();
 	String getAddress();
 	Double getBalance();
-	public ArrayList<Transaction> getTransactions();
+	ArrayList<Transaction> getTransactions();
+	void resetWallet();
+	void displayTransactionAndBalance();
 	
 }

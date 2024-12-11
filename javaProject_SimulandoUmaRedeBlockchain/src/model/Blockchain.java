@@ -1,8 +1,8 @@
 package model;
 
-import java.io.*;
 import java.util.ArrayList;
 import interfaces.Blockchain_IF;
+import interfaces.Wallet_IF;
 
 public class Blockchain implements Blockchain_IF {
 	
@@ -12,7 +12,7 @@ public class Blockchain implements Blockchain_IF {
 	private Double amountCoinBase = 1000.00;
 
 	//construct
-	public Blockchain(Wallet creatorsWallet) {
+	public Blockchain(Wallet_IF creatorsWallet) {
         initializeBlockchain();
         createGenesisBlock(creatorsWallet);
     }
@@ -26,8 +26,7 @@ public class Blockchain implements Blockchain_IF {
 		this.chain = new ArrayList<Block>();
 	}
 	
-    private void createGenesisBlock(Wallet creatorsWallet) {
-    	// Criando a coinbase transaction destinada a mim no genesis block
+    private void createGenesisBlock(Wallet_IF creatorsWallet) {
     	Transaction coinBaseTransaction = new Transaction(creatorsWallet, this.amountCoinBase);
     	ArrayList<Transaction> transactions = new ArrayList<Transaction>();
     	transactions.add(coinBaseTransaction);
@@ -50,40 +49,17 @@ public class Blockchain implements Blockchain_IF {
     		Block currentBlock = this.chain.get(indexCurrentBlock);
     		Block previousBlock = this.chain.get(indexCurrentBlock - 1);
     		
-    		// Atualiza o hash do bloco atual e do anterior por segurança
     		currentBlock.checkBlock(this.difficulty);
     		previousBlock.checkBlock(this.difficulty);
     		
-    		// Verifica se a hash do bloco anterior corresponde ao hash que está no bloco atual
     		if(!currentBlock.getPreviousHash().equals(previousBlock.getHash())){
     			return false;
     		}
     	}
     	
-    	/*
-    	 * Se nenhuma inconsistência for encrontrada, o laço FOR acabará e a blockchain
-    	 * será considerada válida.
-    	 */
 		return true;
 		
 	}
-    
-	public Blockchain blockchainBackup() {
-    	try {
-            // Serializa a Blockchain para um stream de bytes em memória
-            ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
-            ObjectOutputStream outStream = new ObjectOutputStream(byteOutStream);
-            outStream.writeObject(this);
-
-            // Desserializa a Blockchain de volta para um novo objeto
-            ByteArrayInputStream byteInStream = new ByteArrayInputStream(byteOutStream.toByteArray());
-            ObjectInputStream inStream = new ObjectInputStream(byteInStream);
-
-            return (Blockchain) inStream.readObject();  // Retorna a cópia 
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Erro ao clonar a blockchain", e);
-        }    
-    }
 
     //getters and setters
 	@Override
@@ -91,10 +67,12 @@ public class Blockchain implements Blockchain_IF {
 		return chain.get(chain.size() - 1);
 	}
 	
+	@Override
 	public ArrayList<Block> getChain() {
 		return this.chain;
 	}
 	
+	@Override
 	public int getDifficulty() {
 		return this.difficulty;
 	}
