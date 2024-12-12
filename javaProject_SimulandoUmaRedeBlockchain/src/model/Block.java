@@ -36,8 +36,14 @@ public class Block implements Block_IF {
 	
 	//methods
 	@Override
-	public void checkBlock(int difficulty) {
+	public void checkHash() {
 		this.hash = calculateHash();
+	}
+	
+	@Override
+	public boolean checkDifficulty(int difficulty) {
+		String target = new String(new char[difficulty]).replace('\0', '0');
+		return this.hash.substring(0, difficulty).equals(target);
 	}
 	
 	@Override

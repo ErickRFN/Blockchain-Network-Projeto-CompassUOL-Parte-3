@@ -2,17 +2,15 @@ package interfaces;
 
 import java.util.ArrayList;
 
-import model.Block;
-
 public interface Blockchain_IF {
 
-    Block getLatestBlock();
-    void addBlock(Block newBlock);
+    Block_IF getLatestBlock();
+    void addBlock(Block_IF newBlock);
     boolean isChainValid();
     void displayChain();
     Double getAmountCoinBase();
     int getDifficulty();
-    ArrayList<Block> getChain();
+    ArrayList<Block_IF> getChain();
     
 }
 

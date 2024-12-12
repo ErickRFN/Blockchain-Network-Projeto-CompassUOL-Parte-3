@@ -13,6 +13,8 @@ public interface Block_IF {
     String getHash();
     String getTimestamp();
     ArrayList<Transaction> getTransactions();
-	void checkBlock(int difficulty);
+	void checkHash();
+	boolean checkDifficulty(int difficulty);
+	void setTransactions(ArrayList<Transaction> transactions, int difficulty);
 	
 }

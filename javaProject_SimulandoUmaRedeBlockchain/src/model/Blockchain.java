@@ -1,13 +1,12 @@
 package model;
 
 import java.util.ArrayList;
-import interfaces.Blockchain_IF;
-import interfaces.Wallet_IF;
+import interfaces.*;
 
 public class Blockchain implements Blockchain_IF {
 	
 	//attributes
-	private ArrayList<Block> chain;
+	private ArrayList<Block_IF> chain;
 	private int difficulty = 5;
 	private Double amountCoinBase = 1000.00;
 
@@ -19,7 +18,7 @@ public class Blockchain implements Blockchain_IF {
 	
 	//methods
 	private void initializeBlockchain() {
-		this.chain = new ArrayList<Block>();
+		this.chain = new ArrayList<Block_IF>();
 	}
 	
     private void createGenesisBlock(Wallet_IF creatorsWallet) {
@@ -33,7 +32,7 @@ public class Blockchain implements Blockchain_IF {
     }
     
     @Override
-	public void addBlock(Block newBlock) {
+	public void addBlock(Block_IF newBlock) {
 		this.chain.add(newBlock);
 	}
     
@@ -42,11 +41,16 @@ public class Blockchain implements Blockchain_IF {
     	
     	int indexCurrentBlock; 
     	for(indexCurrentBlock = this.chain.size() - 1; indexCurrentBlock > 0; indexCurrentBlock--) {
-    		Block currentBlock = this.chain.get(indexCurrentBlock);
-    		Block previousBlock = this.chain.get(indexCurrentBlock - 1);
+    		Block_IF currentBlock = this.chain.get(indexCurrentBlock);
+    		Block_IF previousBlock = this.chain.get(indexCurrentBlock - 1);
     		
-    		currentBlock.checkBlock(this.difficulty);
-    		previousBlock.checkBlock(this.difficulty);
+    		currentBlock.checkHash();
+    		previousBlock.checkHash();
+    		
+    		if(!currentBlock.checkDifficulty(this.difficulty) ||
+    				!previousBlock.checkDifficulty(this.difficulty)) {
+                return false;
+            }
     		
     		if(!currentBlock.getPreviousHash().equals(previousBlock.getHash())){
     			return false;
@@ -59,12 +63,12 @@ public class Blockchain implements Blockchain_IF {
 
     //getters and setters
 	@Override
-	public Block getLatestBlock() {
+	public Block_IF getLatestBlock() {
 		return chain.get(chain.size() - 1);
 	}
 	
 	@Override
-	public ArrayList<Block> getChain() {
+	public ArrayList<Block_IF> getChain() {
 		return this.chain;
 	}
 	
@@ -81,7 +85,7 @@ public class Blockchain implements Blockchain_IF {
 	//toString
 	@Override
 	public void displayChain() {
-		for (Block block : chain) {
+		for (Block_IF block : chain) {
             System.out.println("Block ID: " + block.getId());
             System.out.println("Timestamp: " + block.getTimestamp());
             System.out.println("Transactions: \n" + block.getTransactions());
