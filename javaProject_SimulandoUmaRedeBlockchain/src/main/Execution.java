@@ -26,6 +26,7 @@ public class Execution {
         		+ "saldo da mesma.");
         
         ExecUtils.threePoints();
+        System.out.println();
         ArrayList<Wallet_IF> wallets = new ArrayList<Wallet_IF>();
         ExecUtils.generateWallets(wallets);
         System.out.println("\n" + TextColor.GREEN_BOLD + "WALLETS GERADAS COM SUCESSO" + TextColor.RESET);
@@ -88,7 +89,7 @@ public class Execution {
         
         System.out.println("-> Agora, irei adicionar mais 2 blocos "
         		+ "\na blockchain, cada um com duas transações, \nalém da "
-        		+ "coinbase sempre para mim.");
+        		+ "coinbase sempre para mim.\n");
         
         ExecUtils.addTransactionToBlockAndBlockchain(blockchain, wallets);
         

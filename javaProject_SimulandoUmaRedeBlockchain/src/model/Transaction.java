@@ -10,6 +10,7 @@ public class Transaction implements Transaction_IF {
 	private String addressSender;
     private String addressReceiver;
     private Double amount;
+    private Double fee;
 
     //constructor
     public Transaction(Wallet_IF sender, Wallet_IF receiver, double amount) {
@@ -21,8 +22,9 @@ public class Transaction implements Transaction_IF {
             this.addressSender = senderAddress;
             this.addressReceiver = receiverAddress;
             this.amount = amount;
+            this.fee = calculateFee(amount);
             
-            System.out.println(TextColor.YELLOW_BOLD + "# ENDEREÇOS DE TRANSAÇÕES VALIDADOS: \n" 
+            System.out.println(TextColor.CYAN_BOLD + "# ENDEREÇOS DE TRANSAÇÕES VALIDADOS: \n" 
             + senderAddress.substring(0, 20) + " -> " + receiverAddress.substring(0, 20) + " = " + amount);
             
             sender.addTransaction(this);
@@ -35,21 +37,28 @@ public class Transaction implements Transaction_IF {
         	this.addressSender = "INVALID TRASACTION";
             this.addressReceiver = "INVALID TRASACTION";
             this.amount = 0.0;
+            this.fee = 0.0;
         }
         
     }
     
-    // Contrutor de transação coinbase
-    public Transaction(Wallet_IF miner, double amount) {
+    // Construtor de transação coinbase ou de taxas
+    public Transaction(Wallet_IF miner, double amount, int type) {
   
     	String minerAddress = miner.getAddress();
     	
     	if (isValidAddress(minerAddress)) {
-            this.addressSender = "COINBASE";
+    		if (type == 0) { // 0- COINBASE & 1- FEES
+    			this.addressSender = "COINBASE";
+    		}else {
+    			this.addressSender = "FEES";
+    		}
+            
             this.addressReceiver = minerAddress;
             this.amount = amount;
+            this.fee = 0.0;
             
-            System.out.println(TextColor.YELLOW_BOLD + "\n# ENDEREÇOS DE MINERADOR VALIDADO: \n" 
+            System.out.println(TextColor.YELLOW_BOLD + "# ENDEREÇOS DE MINERADOR VALIDADO: \n" 
             + this.addressSender + " -> " + minerAddress.substring(0, 20) + " = " + amount);
             
             miner.addTransaction(this);
@@ -58,14 +67,14 @@ public class Transaction implements Transaction_IF {
             + "\nMiner: " + miner.getBalance() + "\n" + TextColor.RESET);
             
         } else {
-        	this.addressSender = "COINBASE";
+        	this.addressSender = "INVALID TRASACTION";
             this.addressReceiver = "INVALID TRASACTION";
             this.amount = 0.0;
+            this.fee = 0.0;
         }
     	
     }
     
-    // auxiliary methods
     public static boolean isValidAddress(String address){
     	
         if (!address.startsWith("DERFN")) {
@@ -83,7 +92,8 @@ public class Transaction implements Transaction_IF {
         
     }
     
-    public static boolean isSum21(String numericPart) {
+    // auxiliary methods
+    private static boolean isSum21(String numericPart) {
     	int sum = 0;
     		
         for (int i = 0; i < numericPart.length(); i++) {
@@ -91,6 +101,10 @@ public class Transaction implements Transaction_IF {
         }
         
         return sum == 21;
+    }
+    
+    private static double calculateFee(double amount) {
+    	return amount * 0.01; // 1% fee
     }
     
     //getters and setters
@@ -108,6 +122,11 @@ public class Transaction implements Transaction_IF {
 	public double getAmount() {
 		return amount;
 	}
+	
+	@Override
+	public Double getFee() {
+        return fee;
+    }
 	
 	//to string method
 	@Override

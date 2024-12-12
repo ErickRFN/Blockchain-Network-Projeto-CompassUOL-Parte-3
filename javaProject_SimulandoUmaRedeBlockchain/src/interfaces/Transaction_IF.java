@@ -5,5 +5,6 @@ public interface Transaction_IF {
     String getAddressSender();
     String getAddressReceiver();
     double getAmount();
+    public Double getFee();
     
 }

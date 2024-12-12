@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 
 import interfaces.Block_IF;
+import interfaces.Wallet_IF;
 import util.HashUtil;
 import util.TextColor;
 
@@ -20,8 +21,11 @@ public class Block implements Block_IF {
 	private int nonce;
 	
 	//constructor
-	public Block(int id, ArrayList<Transaction> transactions, String previousHash, int difficulty) {
+	public Block(int id, ArrayList<Transaction> transactions, String previousHash, int difficulty, Wallet_IF miner) {
 		this.id = id;
+		
+		transactions.add(transFees(transactions, miner));
+		
 		this.transactions = transactions;
         this.previousHash = previousHash;
 		
@@ -31,6 +35,20 @@ public class Block implements Block_IF {
 	}
 	
 	//methods
+	@Override
+	public void checkBlock(int difficulty) {
+		this.hash = calculateHash();
+	}
+	
+	@Override
+	public String calculateHash() {
+		String dataToHash = this.id + this.timestamp + this.transactions
+				+ this.previousHash + this.nonce;
+		
+		return HashUtil.applySHA256(dataToHash);
+	}
+	
+	//auxiliary methods
 	private String generateTimestamp() {
 		LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter DTFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -49,23 +67,21 @@ public class Block implements Block_IF {
 	    }
 	    
 	    System.out.println(TextColor.BLUE_BOLD + "-> Bloco minerado com sucesso! Nonce: " 
-	    + this.nonce + ", Hash: " + this.hash + TextColor.RESET);
+	    + this.nonce + ", Hash: " + this.hash + TextColor.RESET + "\n");
 	}
 	
 	private void updateBlock(int difficulty) {
 		mineBlock(difficulty);
 	}
 	
-	public void checkBlock(int difficulty) {
-		this.hash = calculateHash();
-	}
-	
-	@Override
-	public String calculateHash() {
-		String dataToHash = this.id + this.timestamp + this.transactions
-				+ this.previousHash + this.nonce;
-		
-		return HashUtil.applySHA256(dataToHash);
+	private Transaction transFees(ArrayList<Transaction> transactions, Wallet_IF miner) {
+		double totalFees = 0;
+        
+        for (Transaction transaction : transactions) {
+        	totalFees += transaction.getFee();
+        }
+        
+        return new Transaction(miner, totalFees, 1);
 	}
 	
 	//getters and setters

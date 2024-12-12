@@ -17,21 +17,17 @@ public class Blockchain implements Blockchain_IF {
         createGenesisBlock(creatorsWallet);
     }
 	
-	public Blockchain(ArrayList<Block> backupChain) {
-		this.chain = backupChain;
-	}
-	
 	//methods
 	private void initializeBlockchain() {
 		this.chain = new ArrayList<Block>();
 	}
 	
     private void createGenesisBlock(Wallet_IF creatorsWallet) {
-    	Transaction coinBaseTransaction = new Transaction(creatorsWallet, this.amountCoinBase);
+    	Transaction coinBaseTransaction = new Transaction(creatorsWallet, this.amountCoinBase, 0);
     	ArrayList<Transaction> transactions = new ArrayList<Transaction>();
     	transactions.add(coinBaseTransaction);
     	
-    	Block genesisBlock = new Block(0, transactions, "0", this.difficulty);
+    	Block genesisBlock = new Block(0, transactions, "0", this.difficulty, creatorsWallet);
     	
         this.chain.add(genesisBlock);
     }

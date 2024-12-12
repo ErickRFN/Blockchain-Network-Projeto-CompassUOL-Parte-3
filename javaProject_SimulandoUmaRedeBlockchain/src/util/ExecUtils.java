@@ -75,27 +75,29 @@ public class ExecUtils {
 			ArrayList<Wallet_IF> wallets) {
 		// Criando e adicionando o primeiro bloco
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-        transactions.add(new Transaction(wallets.get(0), blockchain.getAmountCoinBase()));
+        transactions.add(new Transaction(wallets.get(0), blockchain.getAmountCoinBase(), 0));
         transactions.add(new Transaction(wallets.get(0), wallets.get(1), 200.78));
         transactions.add(new Transaction(wallets.get(0), wallets.get(2), 250.02));
         
         Block block1 = new Block(blockchain.getLatestBlock().getId()+1,
         	(ArrayList<Transaction>) transactions.clone(),
         	blockchain.getLatestBlock().getHash(),
-        	blockchain.getDifficulty()
+        	blockchain.getDifficulty(),
+        	wallets.get(0)
         );
         blockchain.addBlock(block1);
         transactions.clear();
         
         // Criando e adicionando o segundo bloco
-        transactions.add(new Transaction(wallets.get(0), blockchain.getAmountCoinBase()));
+        transactions.add(new Transaction(wallets.get(0), blockchain.getAmountCoinBase(), 0));
         transactions.add(new Transaction(wallets.get(0), wallets.get(3), 307.87));
         transactions.add(new Transaction(wallets.get(2), wallets.get(4), 179.44));
         
         Block block2 = new Block(blockchain.getLatestBlock().getId()+1,
         	(ArrayList<Transaction>) transactions.clone(),
         	blockchain.getLatestBlock().getHash(),
-        	blockchain.getDifficulty()
+        	blockchain.getDifficulty(),
+        	wallets.get(0)
         );
         blockchain.addBlock(block2);
         transactions.clear();
@@ -108,7 +110,7 @@ public class ExecUtils {
 		wallets.get(0).getTransactions().remove(1);
 		wallets.get(0).getTransactions().remove(1);
 		
-        transactions.add(new Transaction(wallets.get(5), blockchain.getAmountCoinBase()));
+        transactions.add(new Transaction(wallets.get(5), blockchain.getAmountCoinBase(), 0));
         transactions.add(new Transaction(wallets.get(0), wallets.get(5), 200.78));
         transactions.add(new Transaction(wallets.get(0), wallets.get(6), 250.02));
 		
