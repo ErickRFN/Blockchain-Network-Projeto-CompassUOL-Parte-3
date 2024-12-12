@@ -12,9 +12,9 @@ public interface Block_IF {
     String getPreviousHash();
     String getHash();
     String getTimestamp();
-    ArrayList<Transaction> getTransactions();
+    ArrayList<Transaction_IF> getTransactions();
 	void checkHash();
 	boolean checkDifficulty(int difficulty);
-	void setTransactions(ArrayList<Transaction> transactions, int difficulty);
+	void setTransactions(ArrayList<Transaction_IF> transactions, int difficulty);
 	
 }

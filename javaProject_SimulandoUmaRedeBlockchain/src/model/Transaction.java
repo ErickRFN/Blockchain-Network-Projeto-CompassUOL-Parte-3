@@ -7,7 +7,9 @@ import util.TextColor;
 public class Transaction implements Transaction_IF {
 	
 	//atributes
-	private String addressSender;
+	private Wallet_IF walletSender;
+    private Wallet_IF walletReceiver;
+    private String addressSender;
     private String addressReceiver;
     private Double amount;
     private Double fee;
@@ -15,29 +17,22 @@ public class Transaction implements Transaction_IF {
     //constructor
     public Transaction(Wallet_IF sender, Wallet_IF receiver, double amount) {
     	
-    	String senderAddress = sender.getAddress();
-        String receiverAddress = receiver.getAddress();
+    	this.addressSender = sender.getAddress();
+        this.addressReceiver = receiver.getAddress();
         
-        if (isValidAddress(senderAddress) && isValidAddress(receiverAddress)) {
-            this.addressSender = senderAddress;
-            this.addressReceiver = receiverAddress;
-            this.amount = amount;
+        if (isValidAddress(this.addressSender) && isValidAddress(this.addressReceiver)) {
+            this.walletSender = sender;
+            this.walletReceiver = receiver;
             this.fee = calculateFee(amount);
+            this.amount = amount-this.fee;
             
             System.out.println(TextColor.CYAN_BOLD + "# ENDEREÇOS DE TRANSAÇÕES VALIDADOS: \n" 
-            + senderAddress.substring(0, 20) + " -> " + receiverAddress.substring(0, 20) + " = " + amount);
-            
-            sender.addTransaction(this);
-            receiver.addTransaction(this);
-            
-            System.out.println("- SALDOS ATUALIZADOS: " 
-            + "\nSender: " + sender.getBalance() + "\nReceiver: " + receiver.getBalance() + "\n" + TextColor.RESET);
+            + this.addressSender.substring(0, 20) + " -> " + this.addressReceiver.substring(0, 20) + " = " + amount 
+            + "(taxas: " + this.fee + ")");
+            System.out.println("TRANSAÇÃO NÃO CONFIRMADA: FALTA MINERAR O BLOCO\n" + TextColor.RESET);
             
         } else {
-        	this.addressSender = "INVALID TRASACTION";
-            this.addressReceiver = "INVALID TRASACTION";
-            this.amount = 0.0;
-            this.fee = 0.0;
+        	declareTransactionInvalid();
         }
         
     }
@@ -53,24 +48,19 @@ public class Transaction implements Transaction_IF {
     		}else {
     			this.addressSender = "FEES";
     		}
+    		this.walletSender = null;
             
+    		this.walletReceiver = miner;
             this.addressReceiver = minerAddress;
             this.amount = amount;
             this.fee = 0.0;
             
             System.out.println(TextColor.YELLOW_BOLD + "# ENDEREÇOS DE MINERADOR VALIDADO: \n" 
             + this.addressSender + " -> " + minerAddress.substring(0, 20) + " = " + amount);
-            
-            miner.addTransaction(this);
-            
-            System.out.println("- SALDO ATUALIZADO: " 
-            + "\nMiner: " + miner.getBalance() + "\n" + TextColor.RESET);
+            System.out.println("TRANSAÇÃO NÃO CONFIRMADA: FALTA MINERAR O BLOCO\n" + TextColor.RESET);
             
         } else {
-        	this.addressSender = "INVALID TRASACTION";
-            this.addressReceiver = "INVALID TRASACTION";
-            this.amount = 0.0;
-            this.fee = 0.0;
+        	declareTransactionInvalid();
         }
     	
     }
@@ -104,7 +94,16 @@ public class Transaction implements Transaction_IF {
     }
     
     private static double calculateFee(double amount) {
-    	return amount * 0.01; // 1% fee
+    	return amount * 0.05; // 5% fee
+    }
+    
+    private void declareTransactionInvalid() {
+    	this.walletReceiver = null;
+    	this.walletSender = null;
+    	this.addressSender = "INVALID TRASACTION";
+        this.addressReceiver = "INVALID TRASACTION";
+        this.amount = 0.0;
+        this.fee = 0.0;
     }
     
     //getters and setters
@@ -133,5 +132,15 @@ public class Transaction implements Transaction_IF {
     public String toString() {
         return addressSender + " -> " + addressReceiver + ": " + amount + "\n";
     }
+
+	@Override
+	public Wallet_IF getWallerSender() {
+		return this.walletSender;
+	}
+
+	@Override
+	public Wallet_IF getWallerReceiver() {
+		return this.walletReceiver;
+	}
 	
 }

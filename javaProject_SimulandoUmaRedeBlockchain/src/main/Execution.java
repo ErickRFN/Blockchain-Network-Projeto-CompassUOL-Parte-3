@@ -74,7 +74,8 @@ public class Execution {
         		+ "\ncoinbase no bloco Gênesis direcionada \npara mim mesmo.");
 
         ExecUtils.threePoints();
-        Blockchain_IF blockchain = new Blockchain(wallets.get(0));
+        System.out.println("\n");
+        Blockchain_IF blockchain = new Blockchain(wallets.get(0), wallets.clone());
         System.out.println("\n" + TextColor.GREEN_BOLD + "BLOCKCHAIN GERADA COM SUCESSO" + TextColor.RESET);
         Thread.sleep(1500);
         
@@ -154,7 +155,7 @@ public class Execution {
         Thread.sleep(1500);
         ExecUtils.threePoints();
         ExecUtils.resetWallets(wallets);
-        blockchain = new Blockchain(wallets.get(0));
+        blockchain = new Blockchain(wallets.get(0), wallets);
         ExecUtils.addTransactionToBlockAndBlockchain(blockchain, wallets);
         System.out.println("\n" + TextColor.GREEN_BOLD + "BLOCKCHAIN REFEITA COM SUCESSO" + TextColor.RESET);
         Thread.sleep(1500);

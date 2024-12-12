@@ -6,5 +6,7 @@ public interface Transaction_IF {
     String getAddressReceiver();
     double getAmount();
     public Double getFee();
+    public Wallet_IF getWallerSender();
+    public Wallet_IF getWallerReceiver();
     
 }

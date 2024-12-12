@@ -11,7 +11,7 @@ import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+import interfaces.Transaction_IF;
 import interfaces.Wallet_IF;
 
 public class Wallet implements Wallet_IF {
@@ -23,7 +23,7 @@ public class Wallet implements Wallet_IF {
 	private PrivateKey privateKey; // Por enquanto, sem uso
 	private String address;
 	
-	private ArrayList<Transaction> transactions;
+	private ArrayList<Transaction_IF> transactions;
 	private Double balance;
 	
 	//constructor
@@ -32,7 +32,7 @@ public class Wallet implements Wallet_IF {
         generateKeyPair();	
         this.address = generateAddress();
         
-        this.transactions = new ArrayList<>();
+        this.transactions = new ArrayList<Transaction_IF>();
         this.balance = 0.0;
     }
 	
@@ -74,7 +74,7 @@ public class Wallet implements Wallet_IF {
 	}
 	
 	@Override
-	public void addTransaction(Transaction transaction) {
+	public void addTransaction(Transaction_IF transaction) {
 		
 		this.transactions.add(transaction);
 		
@@ -175,7 +175,7 @@ public class Wallet implements Wallet_IF {
 		}
 		
 		int i = 0;
-		for(Transaction transaction : this.transactions) {
+		for(Transaction_IF transaction : this.transactions) {
 			
 			if(transaction.getAddressSender().equals(this.address)) {
 				System.out.println(i + " - " + "SENT");
@@ -217,7 +217,7 @@ public class Wallet implements Wallet_IF {
 	}
 	
 	@Override
-	public ArrayList<Transaction> getTransactions() {
+	public ArrayList<Transaction_IF> getTransactions() {
 		return this.transactions;
 	}
 	

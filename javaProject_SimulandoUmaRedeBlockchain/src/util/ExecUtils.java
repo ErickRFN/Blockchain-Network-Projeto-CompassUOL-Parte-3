@@ -80,7 +80,7 @@ public class ExecUtils {
         transactions.add(new Transaction(wallets.get(0), wallets.get(2), 250.02));
         
         Block block1 = new Block(blockchain.getLatestBlock().getId()+1,
-        	(ArrayList<Transaction>) transactions.clone(),
+        	(ArrayList<Transaction_IF>) transactions.clone(),
         	blockchain.getLatestBlock().getHash(),
         	blockchain.getDifficulty(),
         	wallets.get(0)
@@ -94,7 +94,7 @@ public class ExecUtils {
         transactions.add(new Transaction(wallets.get(2), wallets.get(4), 179.44));
         
         Block block2 = new Block(blockchain.getLatestBlock().getId()+1,
-        	(ArrayList<Transaction>) transactions.clone(),
+        	(ArrayList<Transaction_IF>) transactions.clone(),
         	blockchain.getLatestBlock().getHash(),
         	blockchain.getDifficulty(),
         	wallets.get(0)
@@ -105,7 +105,7 @@ public class ExecUtils {
 	
 	public static void adulterateBlockchain(Blockchain_IF blockchain,
 			ArrayList<Wallet_IF> wallets) {
-		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		ArrayList<Transaction_IF> transactions = new ArrayList<Transaction_IF>();
 		wallets.get(0).getTransactions().remove(1);
 		wallets.get(0).getTransactions().remove(1);
 		wallets.get(0).getTransactions().remove(1);

@@ -2,8 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-import interfaces.Block_IF;
-import interfaces.Wallet_IF;
+import interfaces.*;
 import util.HashUtil;
 import util.TextColor;
 
@@ -15,13 +14,13 @@ public class Block implements Block_IF {
 	//attributes
 	private int id;
 	private String timestamp;
-	private ArrayList<Transaction> transactions;
+	private ArrayList<Transaction_IF> transactions;
 	private String previousHash;
 	private String hash;
 	private int nonce;
 	
 	//constructor
-	public Block(int id, ArrayList<Transaction> transactions, String previousHash, int difficulty, Wallet_IF miner) {
+	public Block(int id, ArrayList<Transaction_IF> transactions, String previousHash, int difficulty, Wallet_IF miner) {
 		this.id = id;
 		
 		transactions.add(transFees(transactions, miner));
@@ -80,10 +79,10 @@ public class Block implements Block_IF {
 		mineBlock(difficulty);
 	}
 	
-	private Transaction transFees(ArrayList<Transaction> transactions, Wallet_IF miner) {
+	private Transaction transFees(ArrayList<Transaction_IF> transactions, Wallet_IF miner) {
 		double totalFees = 0;
         
-        for (Transaction transaction : transactions) {
+        for (Transaction_IF transaction : transactions) {
         	totalFees += transaction.getFee();
         }
         
@@ -112,7 +111,7 @@ public class Block implements Block_IF {
 	}
 
 	@Override
-	public ArrayList<Transaction> getTransactions() {
+	public ArrayList<Transaction_IF> getTransactions() {
 		return this.transactions;
 	}
 
@@ -121,7 +120,7 @@ public class Block implements Block_IF {
 		return this.nonce;
 	}
 	
-	public void setTransactions(ArrayList<Transaction> transactions, int difficulty) {
+	public void setTransactions(ArrayList<Transaction_IF> transactions, int difficulty) {
 		this.transactions = transactions;
 		updateBlock(difficulty);
 	}

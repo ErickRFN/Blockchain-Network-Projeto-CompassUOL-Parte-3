@@ -9,9 +9,12 @@ public class Blockchain implements Blockchain_IF {
 	private ArrayList<Block_IF> chain;
 	private int difficulty = 5;
 	private Double amountCoinBase = 1000.00;
+	private ArrayList<Wallet_IF> wallets;
 
 	//construct
-	public Blockchain(Wallet_IF creatorsWallet) {
+	@SuppressWarnings("unchecked")
+	public Blockchain(Wallet_IF creatorsWallet, Object wallets) {
+		this.wallets = (ArrayList<Wallet_IF>) wallets;
         initializeBlockchain();
         createGenesisBlock(creatorsWallet);
     }
@@ -19,21 +22,23 @@ public class Blockchain implements Blockchain_IF {
 	//methods
 	private void initializeBlockchain() {
 		this.chain = new ArrayList<Block_IF>();
+		
 	}
 	
     private void createGenesisBlock(Wallet_IF creatorsWallet) {
     	Transaction coinBaseTransaction = new Transaction(creatorsWallet, this.amountCoinBase, 0);
-    	ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+    	ArrayList<Transaction_IF> transactions = new ArrayList<Transaction_IF>();
     	transactions.add(coinBaseTransaction);
     	
     	Block genesisBlock = new Block(0, transactions, "0", this.difficulty, creatorsWallet);
     	
-        this.chain.add(genesisBlock);
+        addBlock(genesisBlock);
     }
     
     @Override
 	public void addBlock(Block_IF newBlock) {
 		this.chain.add(newBlock);
+		confirmBlockAndTransactions(newBlock);
 	}
     
     @Override
@@ -60,6 +65,54 @@ public class Blockchain implements Blockchain_IF {
 		return true;
 		
 	}
+    
+    //auxiliary methods
+    private void confirmBlockAndTransactions(Block_IF newBlock) {
+    	ArrayList<Transaction_IF> transactions = newBlock.getTransactions();
+    	
+    	for(Transaction_IF transaction : transactions) {
+    		
+    		if(transaction.getWallerSender() != null &&
+    				transaction.getWallerReceiver() != null) {
+    			
+    			int posAndContainsWalletSenderInList =
+    					this.wallets.indexOf(transaction.getWallerSender());
+    			int posAndContainsWalletReceiverInList =
+    					this.wallets.indexOf(transaction.getWallerReceiver());
+    			
+    			verifyWalletAndAddTransaction(posAndContainsWalletSenderInList, transaction.getWallerSender(), transaction);
+    			verifyWalletAndAddTransaction(posAndContainsWalletReceiverInList, transaction.getWallerReceiver(), transaction);
+    			
+    		} else if (transaction.getAddressReceiver() != null) {
+    			
+                int posAndContainsWalletReceiverInList =
+                        this.wallets.indexOf(transaction.getWallerReceiver());
+                
+                verifyWalletAndAddTransaction(posAndContainsWalletReceiverInList, transaction.getWallerReceiver(), transaction);
+    		
+    		} else {
+    			System.out.println("!!! Transação inválida por endereço inválido, nenhum saldo foi movido !!!");
+    		}
+    		
+    	}
+    }
+    
+    private void verifyWalletAndAddTransaction(int position, Wallet_IF wallet, Transaction_IF transaction) {
+    	if(position != -1){
+			
+			this.wallets.get(position).addTransaction(transaction);;
+			
+		}else {
+			
+			addWallet(wallet);
+			this.wallets.get(this.wallets.size() - 1).addTransaction(transaction);
+		
+		}
+    }
+    
+    public void addWallet(Wallet_IF wallet) {
+    	this.wallets.add(wallet);
+    }
 
     //getters and setters
 	@Override
@@ -80,6 +133,11 @@ public class Blockchain implements Blockchain_IF {
 	@Override
 	public Double getAmountCoinBase() {
 		return this.amountCoinBase;
+	}
+	
+	@Override
+	public Wallet_IF getWallets() {
+		return this.getWallets();
 	}
 
 	//toString
