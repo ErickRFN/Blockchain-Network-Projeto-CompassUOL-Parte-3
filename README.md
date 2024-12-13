@@ -8,6 +8,8 @@ ___
 
 > Aplicação que simula uma rede blockchain e um sistema de Wallet com chave pública, privada e endereço com validação do endereço e transações salvas na blockchain após a mineração do bloco, feito com **JAVA**. Este projeto, quando executado, irá mostrar as operações que ele é capaz de fazer funcionando baseada em 5 classes java: Transaction.java, Block.java, Blockchain.java, Wallet.java e Node.java. Desafio proposto no programa de bolsas de Blockchain - Compass UOL. Essa é a parte 3 desse projeto.
 
+> Na pasta "Documentação" desse repositório terá um relatório de funcionalidades implementadas nessa parte 3 do projeto.
+
 > Veja as demais partes:
 - [Parte 1](https://github.com/ErickRFN/Repo---CompassStudy/tree/master/Projetos/Projeto%20individual%201%20-%20Construindo%20Uma%20Blockchain "Repositório Parte 1")
 - [Parte 2](https://github.com/ErickRFN/Projeto-Individual-II-Compass-UOL.git "Repositório Parte 2")
