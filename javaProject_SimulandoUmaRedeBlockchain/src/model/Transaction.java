@@ -28,7 +28,7 @@ public class Transaction implements Transaction_IF {
             
             System.out.println(TextColor.CYAN_BOLD + "# ENDEREÇOS DE TRANSAÇÕES VALIDADOS: \n" 
             + this.addressSender.substring(0, 20) + " -> " + this.addressReceiver.substring(0, 20) + " = " + amount 
-            + "(taxas: " + this.fee + ")");
+            + " (taxas: " + this.fee + ")");
             System.out.println("TRANSAÇÃO NÃO CONFIRMADA: FALTA MINERAR O BLOCO\n" + TextColor.RESET);
             
         } else {
@@ -130,7 +130,8 @@ public class Transaction implements Transaction_IF {
 	//to string method
 	@Override
     public String toString() {
-        return addressSender + " -> " + addressReceiver + ": " + amount + "\n";
+        return this.addressSender + " -> " + this.addressReceiver + ": " + amount +
+        		" (taxas: " + this.fee + ")\n";
     }
 
 	@Override

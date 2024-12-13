@@ -47,8 +47,15 @@ public class Block implements Block_IF {
 	
 	@Override
 	public String calculateHash() {
-		String dataToHash = this.id + this.timestamp + this.transactions
-				+ this.previousHash + this.nonce;
+		StringBuilder transactionData = new StringBuilder();
+	    for (Transaction_IF t : this.transactions) {
+	        transactionData.append(t.toString()).append(";"); // Ajuste conforme necessário
+	    }
+
+	    String dataToHash = this.id + this.timestamp 
+	                        + transactionData.toString() 
+	                        + this.previousHash 
+	                        + this.nonce;
 		
 		return HashUtil.applySHA256(dataToHash);
 	}

@@ -11,7 +11,7 @@ public interface Blockchain_IF {
     Double getAmountCoinBase();
     int getDifficulty();
     ArrayList<Block_IF> getChain();
-    public Wallet_IF getWallets();
+    public ArrayList<Wallet_IF> getWallets();
     
 }
 

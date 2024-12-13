@@ -1,21 +1,42 @@
 package model;
 
-import java.util.List;
+import java.util.ArrayList;
 import interfaces.*;
 
 public class Node implements Node_IF {
 	
 	private Blockchain_IF blockchain;
-	private List<Node_IF> neighbors;
+	private ArrayList<Node_IF> neighbors;
+	private Wallet_IF walletNode;
 	
 	//construct
-	public Node(Blockchain_IF blockchain) {
+	public Node(Blockchain_IF blockchain, Wallet_IF walletNode) {
         this.blockchain = blockchain;
+        this.walletNode = walletNode;
+        this.neighbors = new ArrayList<Node_IF>();
     }
 	
 	//methods
 	@Override
+	public void mineBlockNode(ArrayList<Transaction_IF> transactions) {
+		Block_IF newBlock = new Block(
+				this.blockchain.getLatestBlock().getId()+1,
+				transactions, 
+				this.blockchain.getLatestBlock().getHash(),
+				this.blockchain.getDifficulty(),
+				this.walletNode);
+		
+		this.blockchain.addBlock(newBlock);
+		propagateLastestBlock();
+	}
+	
+	@Override
 	public void addNeighbor(Node_IF neighborAdd) {
+		if(this.neighbors == null) {
+			neighbors.add(neighborAdd);
+			return;
+		}
+		
 		for (Node_IF neighbor : this.neighbors) {
 			if(neighbor.equals(neighborAdd)) {
 				System.out.println("-> Par para adicionar já está na lista de conexões desse nó");
@@ -64,6 +85,8 @@ public class Node implements Node_IF {
 				}
 				
 				this.blockchain.addBlock(blockReceived);
+				
+				propagateLastestBlock();
 			} else {
 				updateChain(neighborSender.sendChain());
 			}
@@ -84,6 +107,17 @@ public class Node implements Node_IF {
             propagateLastestBlock();
 		}
 		
+	}
+	
+	//getters and setters
+	@Override
+	public Wallet_IF getWalletNode() {
+		return this.walletNode;
+	}
+	
+	@Override
+	public Blockchain_IF getBlockchain() {
+		return this.blockchain;
 	}
 
 }

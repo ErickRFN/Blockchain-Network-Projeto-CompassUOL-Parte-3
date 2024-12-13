@@ -2,8 +2,6 @@ package interfaces;
 
 import java.util.ArrayList;
 
-import model.Transaction;
-
 public interface Block_IF {
 	
     String calculateHash();

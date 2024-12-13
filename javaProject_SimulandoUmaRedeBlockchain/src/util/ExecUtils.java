@@ -40,12 +40,6 @@ public class ExecUtils {
 		System.out.println();
 	}
 	
-	public static void resetWallets(ArrayList<Wallet_IF> wallets) {
-		for(Wallet_IF wallet : wallets){
-			wallet.resetWallet();
-        }
-	}
-	
 	public static void examplesOfInvalidAddresses() throws InterruptedException {
 		
 		Thread.sleep(1500);
@@ -115,6 +109,27 @@ public class ExecUtils {
         transactions.add(new Transaction(wallets.get(0), wallets.get(6), 250.02));
 		
 		blockchain.getChain().get(1).setTransactions(transactions, blockchain.getDifficulty());;
+	}
+	
+	public static void createNode(ArrayList<Wallet_IF> wallets, ArrayList<Node_IF> listNodes){
+		@SuppressWarnings("unchecked")
+		ArrayList<Wallet_IF> walletsClone = (ArrayList<Wallet_IF>) wallets.clone();
+        listNodes.add(new Node(
+        		new Blockchain(walletsClone.get(2), walletsClone), 
+        		walletsClone.get(2)));
+	}
+	
+	public static void pairNodes(Node_IF node1, Node_IF node2) {
+        node1.addNeighbor(node2);
+        node2.addNeighbor(node1);
+    }
+	
+	public static void createNewBlockNode(Node_IF node) {
+		ArrayList<Transaction_IF> transactions = new ArrayList<Transaction_IF>();
+        transactions.add(new Transaction(node.getWalletNode(), node.getBlockchain().getAmountCoinBase(), 0));
+        transactions.add(new Transaction(node.getBlockchain().getWallets().get(2), node.getBlockchain().getWallets().get(1), 30));
+        transactions.add(new Transaction(node.getBlockchain().getWallets().get(3), node.getBlockchain().getWallets().get(2), 100));
+        node.mineBlockNode(transactions);
 	}
 	
 	public static void validateBlockchain(Blockchain_IF blockchain) {

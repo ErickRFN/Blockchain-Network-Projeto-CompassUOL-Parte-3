@@ -14,7 +14,6 @@ public interface Wallet_IF {
 	String getAddress();
 	Double getBalance();
 	ArrayList<Transaction_IF> getTransactions();
-	void resetWallet();
 	void displayTransactionAndBalance();
 	
 }

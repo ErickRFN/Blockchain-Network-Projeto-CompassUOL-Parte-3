@@ -86,12 +86,6 @@ public class Wallet implements Wallet_IF {
 		
 	}
 	
-	@Override
-	public void resetWallet() {
-		this.transactions.clear();
-		this.balance = 0.0;
-	}
-	
 	// auxiliary methods
 	private String generateSevenDigitsSum21() {
 		Random random = new Random();

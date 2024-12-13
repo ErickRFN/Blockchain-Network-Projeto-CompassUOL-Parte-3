@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import interfaces.*;
+import util.TextColor;
 
 public class Blockchain implements Blockchain_IF {
 	
@@ -95,6 +96,8 @@ public class Blockchain implements Blockchain_IF {
     		}
     		
     	}
+    	
+    	System.out.println(TextColor.GREEN + "!!! TODAS AS TRANSAÇÕES ANTERIORES FORAM CONFIRMADAS NA BLOCKCHAIN !!!\n");
     }
     
     private void verifyWalletAndAddTransaction(int position, Wallet_IF wallet, Transaction_IF transaction) {
@@ -136,8 +139,8 @@ public class Blockchain implements Blockchain_IF {
 	}
 	
 	@Override
-	public Wallet_IF getWallets() {
-		return this.getWallets();
+	public ArrayList<Wallet_IF> getWallets() {
+		return this.wallets;
 	}
 
 	//toString
